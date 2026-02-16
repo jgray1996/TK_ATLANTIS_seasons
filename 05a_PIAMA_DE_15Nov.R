@@ -18,6 +18,9 @@ PIAMA_dates <- read_sav(file.path(conf$data_path, "Season/replication_PIAMA/date
 pheno_PIAMA <- read.csv(file.path(conf$data_path, "Season/replication_PIAMA/piama_rnaseq_subjects.csv"), sep = ';') %>%
   mutate(ID_numb = substring(subject_ID, 1,5))
 
+# nice, use of code reduces the need to repeat yourself. 
+# other pieces of code might have benefited of it more.
+
 ### update IDs 
 piama_ts_newid<- function(sampleid)
   ## transform old_sampleid to new_sampleid
