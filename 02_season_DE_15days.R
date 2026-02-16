@@ -107,6 +107,7 @@ plt <- ggplot(data = de_result_seasons, aes(x=logFC, y = -log10(FDR))) +
         legend.key = element_rect(fill = "white"))+
   xlim(-1.8,2.5)
 
+# nice use of config object!
 png(file.path(conf$data_path, "Season/Season_new_date/plots/Volcano_seasons_15Nov.png"), width = 1200, height = 800, res = 150)
 print(plt)
 dev.off()
@@ -131,6 +132,8 @@ DGEL <- edgeR::calcNormFactors(DGEL, method = "TMM")
 DGEL <- edgeR::estimateDisp(DGEL, design)
 fit <- edgeR::glmQLFit(DGEL, design, legacy = TRUE) ## reproduce previous version of edgeR
 
+
+# The way you name your objects and variables is inconsistent. Use either _ or . but not different naming conventions.
 qlf_seasons_ciliated_corrected <- edgeR::glmQLFTest(fit, coef = 2)
 summary(decideTests(qlf_seasons_ciliated_corrected))
 # new_seasonswinter_spring
@@ -176,6 +179,8 @@ master.Table.cell.types <- master.Table %>%
               as.data.frame() %>%
               tibble::rownames_to_column("Sample") , by = c("GenomeScan_ID" = "Sample"))
 
+# This code is becoming very repetative and can easily be called inside a function.
+# Try no to repeat yourself too much.
 design <- model.matrix(~`Multiciliated.lineage` + age + gender + smoking.status + asthma.status, data = master.Table.cell.types)
 DGEL <- edgeR::DGEList(expression.data)
 keep <- edgeR::filterByExpr(DGEL, design) 
@@ -186,6 +191,9 @@ fit <- edgeR::glmQLFit(DGEL, design, legacy = TRUE) ## reproduce previous versio
 
 qlf_asthma_ciliated_corrected <- edgeR::glmQLFTest(fit, coef = 7)
 summary(decideTests(qlf_asthma_ciliated_corrected))
+
+
+# Again, keep data and code seperate. You have published, but it's bad practice and can lead to data leaks.
 
 # asthma.statusA
 # Down              148
