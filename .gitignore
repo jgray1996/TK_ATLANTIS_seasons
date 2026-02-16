@@ -3,6 +3,7 @@
 # care has been taken to keep data out of the repository
 
 # --- Secrets & Config (Crucial!) ---
+# give people a blue print of how to re-create the config file!
 config.yml
 .env
 .Renviron
