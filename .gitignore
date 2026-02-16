@@ -1,3 +1,7 @@
+# gitignore file seems complete enough
+# environment files are excluded and example files are kept
+# care has been taken to keep data out of the repository
+
 # --- Secrets & Config (Crucial!) ---
 config.yml
 .env
