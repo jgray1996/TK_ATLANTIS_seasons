@@ -14,6 +14,11 @@ conf <- config::get()
 master.Table <- read.csv(file.path(conf$data_path,"/Season/Season_new_date/ATLANTIS_master_table_seasons_new.csv"))
 
 # expression data
+
+## The new standard pipe for R is: |> 
+# This is built into R and is supported by every function and does not need dplyr to be imported
+# Before any pipe place a spacebar. Not a hard rule, but the tidyverse team suggests this as a way 
+# to keep the code tidy. At leas pick one or the other. Either use the space or dont.
 expression.data <- read.csv(file.path(conf$data_path,"/Umi_dedup/20201107_ATLANTIS_raw_readcount_dedup_FINAL.csv"), header = TRUE) %>%
   tibble::column_to_rownames("Gene")%>%
   dplyr::select(c(master.Table$GenomeScan_ID))%>%
@@ -42,9 +47,9 @@ results_df <- data.frame(
   stringsAsFactors = FALSE
 )
 
-
+# huge block of code in a for loop can benefit from the use of functions to keep your code neat and maintainable.
 for (i in 1:(length(breaks_df)/2)) {
-  group_1 = c(breaks_df[i],breaks_df[(i+12)])
+  group_1 = c(breaks_df[i],breaks_df[(i+12)]) # Space after every operating character x + y, space after comma 
   print(group_1)
   master.Table <- master.Table %>%
     mutate(groups = if_else(((DayYear.Maaike >= group_1[1]) & (DayYear.Maaike < group_1[2])), "group1", "group2"))
@@ -69,6 +74,7 @@ for (i in 1:(length(breaks_df)/2)) {
   print(total_n_diff_genes)
   }
 
+# Nice use of portable paths
 save(n_deg, results_df, file = file.path(conf$data_path,"Season/Season_new_date/15days_shift.Rdata"))
 
 # plot N of genes vs date 
@@ -104,7 +110,8 @@ ggplot(dates_genes_df_polar, aes(Date, n_gene)) +
   geom_rect(aes(xmin = as.Date("2015-11-15"), xmax = as.Date("2015-12-31"),
                 ymin = 0, ymax = 1800), fill = alpha("#BFCCB5", 0.05), color = "black") 
   
-  
+
+# Make sure to remove dead code before committing or keep it in with a conditional.  
 
 round_date_genes_plt <- ggplot(dates_genes_df_polar, aes(Date, n_gene)) +
   # geom_rect(aes(xmin = as.Date("2015-05-15"), xmax = as.Date("2015-11-15"),
