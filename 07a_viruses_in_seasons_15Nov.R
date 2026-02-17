@@ -47,7 +47,11 @@ chisq.test(master.Table.ATLANTIS$season, master.Table.ATLANTIS$Rhinovirus_presen
 
 
 ####### check all the viruses names 
-
+## Check this out
+## https://purrr.tidyverse.org/reference/map.html
+## it's not just a for-loop under the hood ;p
+## Also very easily paralizable with 
+## https://furrr.futureverse.org/
 names <- c()
 for (file in files){
   sample <- read.csv(file)
@@ -58,6 +62,8 @@ for (file in files){
   names <- append (names, viral_names)
 }
 
+
+## just use the console or store in an object if you want to use this. This clutters the script.
 unique_names <- unique(names)
 unique_names[str_detect(unique_names, "inf")]
 
@@ -84,16 +90,17 @@ for (file in files){
   }
 }
 
+## This is a high amount of repetition until line 140. This would be a perfect place for a function.
 #### check adenovirus (all-year) ####
 samples_adeno <- c()
 for (file in files){
   sample <- read.csv(file)
   filtered <- sample%>%
     mutate(max_z_score = pmax(new_nt_z_score, new_nr_z_score, na.rm = TRUE)) %>%
-    filter(max_z_score > 3) %>%
+    filter(max_z_score > 3) %>%  ## filter statements can be grouped with: &, |, !, xor() 
     filter(category == "viruses")
-  #filter(str_detect(name, "influenzavirus"))
-  if (any(str_detect(filtered$name, "adenovirus"))){ #save 
+  #filter(str_detect(name, "influenzavirus")) ## remove dead code
+  if (any(str_detect(filtered$name, "adenovirus"))){ #save   ## inline comments are discouraged because it is considered untidy
     file_ID <- str_split(file, '/')[[1]][5]
     sample_ID <- str_split(file_ID, '_')[[1]][1]
     samples_adeno <- append (samples_adeno, sample_ID)

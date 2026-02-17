@@ -21,11 +21,15 @@ data_path = config['default']['data_path']
 
 #%%
 # list all the files 
+
+## Use pathlib.Path it is just a better thought out way of working with paths.
+## just a suggestion, this works too.
 microb_dir = os.path.join(data_path, "Microbes/Output/nasal_brushes_score_check/")
 files = os.listdir(microb_dir)
 
 master_table = os.path.join(data_path, "Season/Season_new_date/ATLANTIS_master_table_seasons_15Nov.csv")
 
+## encapsulate in a function
 samples_list = []
 sample_season = {}
 with open (master_table, 'r') as csvfile:                  
@@ -41,11 +45,14 @@ all_taxa =  {} # all unique taxa IDs (both level 1 and 2) with z-scores >3 in a 
 all_samples = {}
 
 # there is a problem with one sample 399 (I don't know what happened)
+## encapsulate in a function
+
 for sample in samples_list: 
     needed_file = "not found"
     for file in files:
         if sample in file:
             needed_file = microb_dir + file
+    ## encapsulate in a function
     if needed_file != "not found":  
         with open (needed_file, 'r') as csvfile:         
             sample_name = sample
@@ -62,14 +69,18 @@ for sample in samples_list:
                     name = row['name']
                     is_phage = row['is_phage']
                     z_scores = []
+                    ## encapsulate in a function
+
                     for z_score in [row['new_nt_z_score'], row['new_nr_z_score']]:
                         try:
                             z_scores.append(float(z_score))
                         except ValueError:
-                            pass
+                            pass ## Using try except to just to make your code not crash is not very elite 
                     if z_scores: #if the list is not empty
                         max_z_score = max(z_scores) # get mx score from 
                     #save only if z_score >3 and it is not a phage
+                        ## encapsulate in a function
+
                         if max_z_score > 3 and is_phage == "false":
                             #print(z_scores, max_z_score)
                             all_samples[sample_name][taxa] = [tax_level, genus_tax_id, name, max_z_score]
@@ -81,6 +92,7 @@ for sample in samples_list:
 # %% loop over taxa
 # record N of samples per taxa that have the taxa present in 2 seasons
 
+## encapsulate in a function
 all_taxa_seasons = {}
 for taxa in all_taxa:
     winter_spring = 0
@@ -96,6 +108,8 @@ for taxa in all_taxa:
     print(all_taxa_seasons[taxa])
             
 # save only taxa that is present in at least 4 samples
+## encapsulate in a function
+
 at_least_4_samples_taxa_seasons = {}
 n = 0
 for taxa in all_taxa_seasons:
@@ -107,6 +121,7 @@ for taxa in all_taxa_seasons:
 #%% perform chi-suare test 
 # winter_spring vs summer_autumn
 
+# imports at the top
 from scipy.stats import chi2_contingency
 import numpy as np
 from collections import Counter
@@ -121,6 +136,9 @@ p_val_list = []
 
 # loop over all the taxa
 # data - contingency table seasons vs viral presence 
+
+## encapsulate in a function
+
 for taxa in all_taxa_seasons:
     data = [season_freq - np.array(all_taxa_seasons[taxa]),
             np.array(all_taxa_seasons[taxa])] 
@@ -138,3 +156,15 @@ rejected, adjusted_p_values, _, _ = multipletests(p_values, method='fdr_bh')
 min(adjusted_p_values)
 
 # min fdr adjusted p-value == 0.466
+
+## This is the pylint output
+
+#  07b_all_viruses_in_seasons_15Nov.py:110:0: C0413: Import "from scipy.stats import chi2_contingency" should be placed at the top of the module (wrong-import-position)
+#  07b_all_viruses_in_seasons_15Nov.py:111:0: C0413: Import "import numpy as np" should be placed at the top of the module (wrong-import-position)
+#  07b_all_viruses_in_seasons_15Nov.py:112:0: C0413: Import "from collections import Counter" should be placed at the top of the module (wrong-import-position)
+#  07b_all_viruses_in_seasons_15Nov.py:124:0: C0206: Consider iterating with .items() (consider-using-dict-items)
+#  07b_all_viruses_in_seasons_15Nov.py:134:0: C0413: Import "from statsmodels.stats.multitest import multipletests" should be placed at the top of the module (wrong-import-position)
+#  07b_all_viruses_in_seasons_15Nov.py:112:0: C0411: standard import "collections.Counter" should be placed before third party imports "yaml", "scipy.stats.chi2_contingency", "numpy" (wrong-import-order)
+
+
+## I presume this was an jupyter notebook. Just save as such, there are no "rules" using those. Exporting to py will just produce a slightly unorganized script.
