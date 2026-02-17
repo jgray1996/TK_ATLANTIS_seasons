@@ -81,6 +81,7 @@ top.table <- topTable(tmp, sort.by = "P", n = Inf)
 write.csv(top.table, file.path(conf$data_path, "Season/Season_new_date/PIAMA_DE_seasons_sex_center_asthma.csv"))
 
 ## clinical characteristics 
+## I understand, you too
 library(tableone)
 
 PIAMA_dates <- PIAMA_dates%>%
