@@ -15,6 +15,8 @@ conf <- config::get()
 # Create one table with DE statistics out of 2 
 # Arguments: 2 tables resulting from DE analysis
 
+
+# Nicely used through the script.
 create_compare_df <- function(df_one, df_two, name_one, name_two) {
   overlap_genes <- intersect(df_one$Gene, df_two$Gene)
   comparison_df <- df_one %>%
@@ -38,6 +40,7 @@ create_compare_df <- function(df_one, df_two, name_one, name_two) {
         
 ## 1. Compare models with and without seasons 
 
+# inconsistent use of naming conventions 
 de.result.asthma.seasons <- read.csv(file.path(conf$data_path, "Season/Season_new_date/DE_genes_15Nov_asthma.csv"))
 de.result.asthma <- read.csv(file.path(conf$data_path, "Umi_dedup/Dif_expr/DE.genes.ATLANTIS.csv"))
 
@@ -144,7 +147,7 @@ dev.off()
 ## 3. Compare models with seasons vs with seasons AND ciliated 
 comparison_df <- create_compare_df(de.result.asthma.seasons, de.result.asthma.seasons.ciliated, "asthma_seasons", "season_ciliated_asthma")
 
-#plot 
+#plot <- just call the variable plot. No need to abbreviate if a self explaining variable name is enough. if you want to save a character, then don't comment on it.
 plt <- ggplot(comparison_df %>%
                 filter(asthma_seasons_FDR < 0.05 | season_ciliated_asthma_FDR < 0.05), 
               aes(x = -log10(season_ciliated_asthma_FDR), y=-log10(asthma_seasons_FDR))) +
@@ -192,3 +195,5 @@ plt <- ggplot(comparison_df %>%
         legend.text = element_text(size = rel(1.5)), 
         axis.title.x = element_text(size = rel(1.5)),
         axis.title.y = element_text(size = rel(1.5)))
+
+# good use of comments through the script. Made it very clear. 
